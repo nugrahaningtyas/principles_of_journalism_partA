@@ -29,7 +29,7 @@
   }
   header{
     text-align:center;
-    max-width:640px;
+    max-width:760px;
     margin-bottom:18px;
   }
   h1{
@@ -59,12 +59,18 @@
   .stats b{color:var(--accent);}
   #board{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:14px;
+    grid-template-columns:repeat(5, 1fr);
+    gap:12px;
     width:100%;
-    max-width:640px;
+    max-width:920px;
+  }
+  @media (max-width:760px){
+    #board{grid-template-columns:repeat(4, 1fr);}
   }
   @media (max-width:520px){
+    #board{grid-template-columns:repeat(3, 1fr);}
+  }
+  @media (max-width:380px){
     #board{grid-template-columns:repeat(2, 1fr);}
   }
   .card{
@@ -126,17 +132,13 @@
     color:#fff;
   }
   .face-front .text{
-    font-size:0.82rem;
-    line-height:1.25;
+    font-size:0.72rem;
+    line-height:1.2;
   }
   .term .face-front .text{
-    font-size:1.05rem;
+    font-size:0.95rem;
     font-weight:700;
   }
-  .card[data-group="verification"] .face-front .label{background:var(--verify);}
-  .card[data-group="objectivity"] .face-front .label{background:var(--objective);}
-  .card[data-group="originality"] .face-front .label{background:var(--original);}
-
   .card.matched .face-front{
     box-shadow:0 0 0 3px var(--accent), 0 4px 10px rgba(0,0,0,0.35);
   }
@@ -152,7 +154,7 @@
   }
 
   #panel{
-    max-width:640px;
+    max-width:920px;
     width:100%;
     margin-top:22px;
     font-family:Arial, sans-serif;
@@ -165,6 +167,8 @@
     border-radius:12px;
     padding:22px;
     margin-top:20px;
+    max-width:560px;
+    width:100%;
   }
   #win h2{margin-top:0;color:var(--accent);}
   #win p{color:#dfe7f2;font-size:0.95rem;line-height:1.5;}
@@ -183,16 +187,18 @@
   .legend{
     display:flex;
     flex-wrap:wrap;
-    gap:14px;
+    gap:10px;
     justify-content:center;
+    max-width:760px;
     margin-top:24px;
     font-family:Arial, sans-serif;
-    font-size:0.78rem;
+    font-size:0.75rem;
     color:#cbd6e6;
   }
-  .legend .dot{
-    width:10px;height:10px;border-radius:50%;
-    display:inline-block;margin-right:6px;vertical-align:middle;
+  .legend span{
+    border:1px solid #3d6699;
+    padding:4px 10px;
+    border-radius:999px;
   }
 </style>
 </head>
@@ -200,12 +206,12 @@
 
 <header>
   <h1>The <span>Newsroom</span> Match</h1>
-  <p class="sub">Flip two cards at a time to pair each core journalism principle with its definition. Match all three principles to win.</p>
+  <p class="sub">Flip two cards at a time to pair each core journalism principle with its definition. Match all 10 principles to win.</p>
 </header>
 
 <div class="stats">
   <div>Moves: <b id="moves">0</b></div>
-  <div>Matches: <b id="matchCount">0</b>/3</div>
+  <div>Matches: <b id="matchCount">0</b>/10</div>
 </div>
 
 <div id="board"></div>
@@ -216,11 +222,7 @@
   <button onclick="init()">Play Again</button>
 </div>
 
-<div class="legend">
-  <span><span class="dot" style="background:var(--verify)"></span>Verification</span>
-  <span><span class="dot" style="background:var(--objective)"></span>Objectivity</span>
-  <span><span class="dot" style="background:var(--original)"></span>Originality</span>
-</div>
+<div class="legend" id="legend"></div>
 
 <script>
 const PRINCIPLES = [
@@ -238,6 +240,41 @@ const PRINCIPLES = [
     group:"originality",
     term:"Originality",
     def:"Producing your own work instead of copying someone else's."
+  },
+  {
+    group:"completeness",
+    term:"Completeness",
+    def:"Telling the whole story, not just part of it."
+  },
+  {
+    group:"transparency",
+    term:"Transparency",
+    def:"Clearly showing who the reporter has interviewed."
+  },
+  {
+    group:"fairness",
+    term:"Fairness",
+    def:"Giving the facts from both sides of a story."
+  },
+  {
+    group:"restraint",
+    term:"Restraint",
+    def:"Holding back a story if publishing it would harm readers or society."
+  },
+  {
+    group:"humanity",
+    term:"Humanity",
+    def:"Treating the people in a story with respect."
+  },
+  {
+    group:"accountability",
+    term:"Accountability",
+    def:"Taking responsibility for a story and holding powerful people in check."
+  },
+  {
+    group:"empowerment",
+    term:"Empowerment",
+    def:"Giving voice and support to those who lack it."
   }
 ];
 
@@ -328,8 +365,13 @@ function onCardClick(idx){
 
 function showWin(){
   document.getElementById('winText').textContent =
-    `You matched all 3 journalism principles in ${moves} moves. Verification, objectivity, and originality — the backbone of trustworthy reporting.`;
+    `You matched all 10 journalism principles in ${moves} moves. Verification, objectivity, originality, completeness, transparency, fairness, restraint, humanity, accountability, and empowerment — the backbone of trustworthy reporting.`;
   document.getElementById('win').style.display = 'block';
+}
+
+function renderLegend(){
+  const legend = document.getElementById('legend');
+  legend.innerHTML = PRINCIPLES.map(p => `<span>${p.term}</span>`).join('');
 }
 
 function init(){
@@ -342,6 +384,7 @@ function init(){
   document.getElementById('matchCount').textContent = 0;
   document.getElementById('win').style.display = 'none';
   render();
+  renderLegend();
 }
 
 init();
